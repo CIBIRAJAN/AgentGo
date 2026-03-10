@@ -1,0 +1,78 @@
+{
+    "name": "Vapi Outbound Call (AgentGo)",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "vapi-outbound-call",
+                "options": {}
+            },
+            "name": "Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ],
+            "webhookId": "agentgo-vapi-webhook"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://api.vapi.ai/call/phone",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer ea4e7016-5138-4b36-a7cd-f4e39b0974a5"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "phoneNumberId",
+                            "value": "f538600f-6fcd-4a2e-b176-be4b1eb50912"
+                        },
+                        {
+                            "name": "customer",
+                            "value": "={{ {\"number\": $json.body.phone_number} }}"
+                        },
+                        {
+                            "name": "assistant",
+                            "value": "={{ { \"transcriber\": {\"provider\": \"deepgram\", \"model\": \"nova-2\", \"language\": \"en-US\"}, \"model\": {\"provider\": \"openai\", \"model\": \"gpt-4o-mini\", \"messages\": [{\"role\": \"system\", \"content\": \"You are a confident, polite payment reminder assistant for LIC. Your name is AgentGo Assistant. You are calling on behalf of agent \" + $json.body.agent_name + \". You are speaking to \" + $json.body.client_name + \". Your goal is to inform them that policy number \" + $json.body.policy_number + \" has a pending premium of Rs. \" + $json.body.amount_due + \". Ask them politely when they can make the payment. If they need to pay, tell them they can use the LIC official portal or contact the agent directly. End the call politely after confirming.\"} ]}, \"voice\": {\"provider\": \"11labs\", \"voiceId\": \"bIHbv24MWmeRgasZH58o\"}, \"firstMessage\": \"Hello! Am I speaking with \" + $json.body.client_name + \"?\" } }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "Trigger Vapi Call",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.1,
+            "position": [
+                500,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Trigger Vapi Call",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "active": false,
+    "settings": {},
+    "versionId": "f2c3d1b6-0b3b-4b1a-9c1a-1a2b3c4d5e6f"
+}

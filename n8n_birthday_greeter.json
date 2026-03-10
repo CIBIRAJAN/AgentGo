@@ -1,0 +1,117 @@
+{
+    "name": "Daily Birthday Auto-Greeter (AgentGo)",
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "cronExpression",
+                            "expression": "0 9 * * *"
+                        }
+                    ]
+                }
+            },
+            "id": "1",
+            "name": "Schedule Trigger (9 AM Daily)",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1.1,
+            "position": [
+                380,
+                240
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "SELECT client_name, phone_number, dob FROM clients WHERE EXTRACT(MONTH FROM dob) = EXTRACT(MONTH FROM CURRENT_DATE) AND EXTRACT(DAY FROM dob) = EXTRACT(DAY FROM CURRENT_DATE);"
+            },
+            "id": "2",
+            "name": "Postgres (Supabase) - Find Birthdays",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 2.2,
+            "position": [
+                600,
+                240
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{ $json.client_name }}",
+                            "operation": "isNotEmpty"
+                        }
+                    ]
+                }
+            },
+            "id": "3",
+            "name": "Filter: Has Birthday Today",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                820,
+                240
+            ]
+        },
+        {
+            "parameters": {
+                "resource": "message",
+                "operation": "send",
+                "from": "whatsapp:+1YOUR_TWILIO_NUMBER",
+                "to": "=whatsapp:{{ $json.phone_number }}",
+                "body": "=Hi {{ $json.client_name }}! Wishing you and your family a very Happy Birthday! 🎂🎉 Hoping you have a wonderful day filled with joy and blessings! Warm Regards from AgentGo."
+            },
+            "id": "4",
+            "name": "Twilio - Send WhatsApp Greeting",
+            "type": "n8n-nodes-twilio.twilio",
+            "typeVersion": 1,
+            "position": [
+                1040,
+                220
+            ]
+        }
+    ],
+    "pinData": {},
+    "connections": {
+        "Schedule Trigger (9 AM Daily)": {
+            "main": [
+                [
+                    {
+                        "node": "Postgres (Supabase) - Find Birthdays",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Postgres (Supabase) - Find Birthdays": {
+            "main": [
+                [
+                    {
+                        "node": "Filter: Has Birthday Today",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Filter: Has Birthday Today": {
+            "main": [
+                [
+                    {
+                        "node": "Twilio - Send WhatsApp Greeting",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "active": false,
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "versionId": "fbad305d-2b4a-4b95-a400-da76d1e4e1a0"
+}
