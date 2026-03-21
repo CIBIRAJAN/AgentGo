@@ -1,0 +1,80 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generate-celebration",
+        "options": {}
+      },
+      "id": "e98e2023-5e72-4d23-9993-4a11c88882ca",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "generate-celebration"
+    },
+    {
+      "parameters": {
+        "model": "dall-e-3",
+        "prompt": "=A professional, high-end greeting poster for {{ $json.body.celebration_name }}. \nThe poster should prominently feature the text \"Happy {{ $json.body.celebration_name }}\" in elegant, artistic typography. \nAt the bottom, add a section that says \"With Warm Regards, {{ $json.body.agent_name }}\". \nThe theme should be festive, luxury, and 4K quality. Minimalist yet premium aesthetic.",
+        "size": "1024x1024",
+        "quality": "standard"
+      },
+      "id": "c12d3e4f-5678-4a11-b2c3-d4e5f6g7h8i9",
+      "name": "OpenAI Image Engine",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        500,
+        300
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_KEY_ID"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "f8a9b0c1-d2e3-4f5a-6b7c-8d9e0f1a2b3c",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        750,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Image Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Image Engine": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

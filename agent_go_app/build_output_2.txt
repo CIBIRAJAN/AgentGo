@@ -1,0 +1,244 @@
+Launching lib/main.dart on 22041216I in debug mode...
+Running Gradle task 'assembleDebug'...                          
+D/FlutterJNI(21122): Beginning load of flutter...
+D/FlutterJNI(21122): flutter (null) was loaded normally!
+Running Gradle task 'assembleDebug'...                              6.3s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+I/flutter (21122): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+Installing build/app/outputs/flutter-apk/app-debug.apk...           4.6s
+D/FlutterJNI(23262): Beginning load of flutter...
+D/FlutterJNI(23262): flutter (null) was loaded normally!
+I/flutter (23262): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+D/FlutterGeolocator(23262): Attaching Geolocator to activity
+D/FlutterRenderer(23262): Width is zero. 0,0
+D/FlutterRenderer(23262): Width is zero. 0,0
+D/BufferQueueConsumer(23262): [](id:5ade00000000,api:0,p:-1,c:23262) connect: controlledByApp=false
+I/gentgo.agent_go(23262): Compiler allocated 6213KB to compile void android.view.ViewRootImpl.performTraversals()
+D/libMEOW (23262): meow new tls: 0xb400007d9b921100
+D/libMEOW (23262): applied 1 plugins for [com.agentgo.agent_go]:
+D/libMEOW (23262):   plugin 1: [libMEOW_gift.so]:
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/VRI[MainActivity](23262): vri.reportNextDraw android.view.ViewRootImpl.performTraversals:4460 android.view.ViewRootImpl.doTraversal:3069 android.view.ViewRootImpl$TraversalRunnable.run:10654 android.view.Choreographer$CallbackRecord.run:1768 android.view.Choreographer$CallbackRecord.run:1777 
+D/SurfaceView(23262): UPDATE null, mIsCastMode = false
+E/OpenGLRenderer(23262): Unable to match the desired swap behavior.
+D/BufferQueueConsumer(23262): [](id:5ade00000001,api:0,p:-1,c:23262) connect: controlledByApp=false
+E/gralloc4(23262): ERROR: Format allocation info not found for format: 38
+E/gralloc4(23262): ERROR: Format allocation info not found for format: 0
+E/gralloc4(23262): Invalid base format! req_base_format = 0x0, req_format = 0x38, type = 0x0
+E/gralloc4(23262): ERROR: Unrecognized and/or unsupported format 0x38 and usage 0xb00
+E/Gralloc4(23262): isSupported(1, 1, 56, 1, ...) failed with 5
+E/GraphicBufferAllocator(23262): Failed to allocate (4 x 4) layerCount 1 format 56 usage b00: 5
+E/AHardwareBuffer(23262): GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -5), handle=0x0
+E/gralloc4(23262): ERROR: Format allocation info not found for format: 3b
+E/gralloc4(23262): ERROR: Format allocation info not found for format: 0
+E/gralloc4(23262): Invalid base format! req_base_format = 0x0, req_format = 0x3b, type = 0x0
+E/gralloc4(23262): ERROR: Unrecognized and/or unsupported format 0x3b and usage 0xb00
+E/Gralloc4(23262): isSupported(1, 1, 59, 1, ...) failed with 5
+E/GraphicBufferAllocator(23262): Failed to allocate (4 x 4) layerCount 1 format 59 usage b00: 5
+E/AHardwareBuffer(23262): GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -5), handle=0x0
+E/gralloc4(23262): ERROR: Format allocation info not found for format: 38
+E/gralloc4(23262): ERROR: Format allocation info not found for format: 0
+E/gralloc4(23262): Invalid base format! req_base_format = 0x0, req_format = 0x38, type = 0x0
+E/gralloc4(23262): ERROR: Unrecognized and/or unsupported format 0x38 and usage 0xb00
+E/Gralloc4(23262): isSupported(1, 1, 56, 1, ...) failed with 5
+E/GraphicBufferAllocator(23262): Failed to allocate (4 x 4) layerCount 1 format 56 usage b00: 5
+E/AHardwareBuffer(23262): GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -5), handle=0x0
+E/gralloc4(23262): ERROR: Format allocation info not found for format: 3b
+E/gralloc4(23262): ERROR: Format allocation info not found for format: 0
+E/gralloc4(23262): Invalid base format! req_base_format = 0x0, req_format = 0x3b, type = 0x0
+E/gralloc4(23262): ERROR: Unrecognized and/or unsupported format 0x3b and usage 0xb00
+E/Gralloc4(23262): isSupported(1, 1, 59, 1, ...) failed with 5
+E/GraphicBufferAllocator(23262): Failed to allocate (4 x 4) layerCount 1 format 59 usage b00: 5
+E/AHardwareBuffer(23262): GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -5), handle=0x0
+W/libc    (23262): Access denied finding property "ro.vendor.magt.mtk_magt_support"
+D/MAGT_SYNC_FRAME(23262): MAGT Sync: MAGT is not supported. Disabling Sync.
+Syncing files to device 22041216I...                            
+W/Looper  (23262): PerfMonitor doFrame : time=215ms vsyncFrame=29235029 latency=1401ms procState=-1 historyMsgCount=4 (msgIndex=1 wall=505ms seq=3 h=android.app.ActivityThread$H w=110) (msgIndex=2 wall=1271ms seq=4 late=496ms h=android.app.ActivityThread$H w=159)
+D/FlutterGeolocator(23262): Creating service.
+D/FlutterGeolocator(23262): Binding to location service.
+Syncing files to device 22041216I...                                79ms
+
+Flutter run key commands.
+r Hot reload. 🔥🔥🔥
+R Hot restart.
+h List all available interactive commands.
+d Detach (terminate "flutter run" but leave application running).
+c Clear the screen
+q Quit (terminate the application on the device).
+
+A Dart VM Service on 22041216I is available at: http://127.0.0.1:59522/C5FZ8AzOxKI=/
+The Flutter DevTools debugger and profiler on 22041216I is available at: http://127.0.0.1:59522/C5FZ8AzOxKI=/devtools/?uri=ws://127.0.0.1:59522/C5FZ8AzOxKI=/ws
+I/flutter (23262): supabase.supabase_flutter: INFO: ***** Supabase init completed ***** 
+D/SurfaceView(23262): UPDATE Surface(name=SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#81862)/@0xecbcc3b, mIsProjectionMode = false
+W/Looper  (23262): PerfMonitor doFrame : time=3ms vsyncFrame=29235116 latency=322ms procState=-1 historyMsgCount=12 (msgIndex=1 wall=215ms seq=7 late=1401ms h=android.view.Choreographer$FrameHandler c=android.view.Choreographer$FrameDisplayEventReceiver)
+D/FlutterGeolocator(23262): Geolocator foreground service connected
+D/FlutterGeolocator(23262): Initializing Geolocator services
+D/FlutterGeolocator(23262): Flutter engine connected. Connected engine count 1
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+I/flutter (23262): [90m[🌎 Easy Localization] [DEBUG] Localization initialized[0m
+I/flutter (23262): [90m[🌎 Easy Localization] [DEBUG] Start[0m
+I/flutter (23262): [90m[🌎 Easy Localization] [DEBUG] Init state[0m
+I/flutter (23262): [90m[🌎 Easy Localization] [DEBUG] Build[0m
+I/flutter (23262): [90m[🌎 Easy Localization] [DEBUG] Init Localization Delegate[0m
+I/flutter (23262): [90m[🌎 Easy Localization] [DEBUG] Init provider[0m
+I/flutter (23262): [90m[🌎 Easy Localization] [DEBUG] Load Localization Delegate[0m
+I/flutter (23262): [90m[🌎 Easy Localization] [DEBUG] Load asset from assets/translations[0m
+I/Choreographer(23262): Skipped 40 frames!  The application may be doing too much work on its main thread.
+W/Looper  (23262): PerfMonitor doFrame : time=1ms vsyncFrame=29235144 latency=673ms procState=-1
+I/flutter (23262): [90m[🌎 Easy Localization] [DEBUG] Build[0m
+I/flutter (23262): [90m[🌎 Easy Localization] [DEBUG] Init Localization Delegate[0m
+I/flutter (23262): [90m[🌎 Easy Localization] [DEBUG] Init provider[0m
+W/libc    (23262): Access denied finding property "persist.vendor.debug.gpud.enable"
+E/LB      (23262): fail to open file: No such file or directory
+E/LB      (23262): fail to open node: No such file or directory
+W/libc    (23262): Access denied finding property "ro.vendor.display.iris_x7.support"
+D/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:0,a:1) acquireNextBufferLocked size=1080x2416 mFrameNumber=1 applyTransaction=true mTimestamp=453562051810418(auto) mPendingTransactions.size=0 graphicBufferId=99909529239566 transform=0
+I/Choreographer(23262): Skipped 46 frames!  The application may be doing too much work on its main thread.
+D/VRI[MainActivity](23262): vri.Setup new sync=wmsSync-VRI[MainActivity]#1
+D/OpenGLRenderer(23262): makeCurrent grContext:0xb400007d89a351a0 reset mTextureAvailable
+D/gentgo.agent_go(23262): MiuiProcessManagerServiceStub setSchedFifo
+I/MiuiProcessManagerImpl(23262): setSchedFifo pid:23262, mode:3
+W/libc    (23262): Access denied finding property "ro.vendor.display.iris_x7.support"
+D/BLASTBufferQueue(23262): [VRI[MainActivity]#0](f:0,a:1) acquireNextBufferLocked size=1080x2460 mFrameNumber=1 applyTransaction=true mTimestamp=453562126174802(auto) mPendingTransactions.size=0 graphicBufferId=99909529239571 transform=0
+D/VRI[MainActivity](23262): vri.reportDrawFinished
+W/Looper  (23262): PerfMonitor doFrame : time=32ms vsyncFrame=29235185 latency=768ms procState=-1 historyMsgCount=1
+I/OpenGLRenderer(23262): Davey! duration=797ms; Flags=1, FrameTimelineVsyncId=341772175, IntendedVsync=453561328851577, Vsync=453562088540795, InputEventId=0, HandleInputStart=453562096885802, AnimationStart=453562096887033, PerformTraversalsStart=453562096888033, DrawStart=453562098173264, FrameDeadline=453561348851577, FrameInterval=453562096565264, FrameStartTime=16514983, FlingPosition=0, SyncQueued=453562100599341, SyncStart=453562100751110, IssueDrawCommandsStart=453562102482187, SwapBuffers=453562123765802, FrameCompleted=453562126814418, DequeueBufferDuration=3722154, QueueBufferDuration=311384, GpuCompleted=453562126814418, SwapBuffersCompleted=453562126603725, DisplayPresentTime=0, CommandSubmissionCompleted=453562123765802, 
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+I/HandWritingStubImpl(23262): refreshLastKeyboardType: 1
+I/HandWritingStubImpl(23262): getCurrentKeyboardType: 1
+I/HandWritingStubImpl(23262): getCurrentKeyboardType: 1
+I/ImeTracker(23262): com.agentgo.agent_go:3adfc3e6: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT
+I/HandWritingStubImpl(23262): refreshLastKeyboardType: 1
+I/HandWritingStubImpl(23262): getCurrentKeyboardType: 1
+D/InputMethodManager(23262): showSoftInput() view=io.flutter.embedding.android.FlutterView{5f1b189 VFE...... .F....ID 0,0-1080,2416 #2 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+W/libc    (23262): Access denied finding property "ro.vendor.display.iris_x7.support"
+D/InsetsController(23262): show(ime(), fromIme=true)
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+I/ImeTracker(23262): com.agentgo.agent_go:3adfc3e6: onShown
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/ProfileInstaller(23262): Installing profile for com.agentgo.agent_go
+I/HandWritingStubImpl(23262): getCurrentKeyboardType: 1
+I/ImeTracker(23262): com.agentgo.agent_go:f7dde118: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT
+D/InputMethodManager(23262): showSoftInput() view=io.flutter.embedding.android.FlutterView{5f1b189 VFE...... .F...... 0,0-1080,2416 #2 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+D/InsetsController(23262): show(ime(), fromIme=true)
+I/ImeTracker(23262): com.agentgo.agent_go:f7dde118: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+W/gentgo.agent_go(23262): userfaultfd: MOVE ioctl seems unsupported: Connection timed out
+W/FinalizerDaemon(23262): type=1400 audit(0.0:631639): avc:  denied  { getopt } for  path="/dev/socket/usap_pool_primary" scontext=u:r:untrusted_app:s0:c121,c260,c512,c768 tcontext=u:r:zygote:s0 tclass=unix_stream_socket permissive=0 app=com.google.android.youtube
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~wtLCafNCkZpsBnSqqOkPtA==/com.google.android.marvin.talkback-v47f93JOID1_xDNemBE1iA==/base.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~wtLCafNCkZpsBnSqqOkPtA==/com.google.android.marvin.talkback-v47f93JOID1_xDNemBE1iA==/split_config.arm64_v8a.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~5mnJg5ZIDFTFh-Gbrw0UmQ==/cn.wps.moffice_eng-u-zoO9_nhpInlDe3vIkHPQ==/base.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~5mnJg5ZIDFTFh-Gbrw0UmQ==/cn.wps.moffice_eng-u-zoO9_nhpInlDe3vIkHPQ==/split_config.arm64_v8a.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~5mnJg5ZIDFTFh-Gbrw0UmQ==/cn.wps.moffice_eng-u-zoO9_nhpInlDe3vIkHPQ==/split_config.en.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~5mnJg5ZIDFTFh-Gbrw0UmQ==/cn.wps.moffice_eng-u-zoO9_nhpInlDe3vIkHPQ==/split_config.xxhdpi.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~5mnJg5ZIDFTFh-Gbrw0UmQ==/cn.wps.moffice_eng-u-zoO9_nhpInlDe3vIkHPQ==/split_vassonic.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~5mnJg5ZIDFTFh-Gbrw0UmQ==/cn.wps.moffice_eng-u-zoO9_nhpInlDe3vIkHPQ==/split_vassonic.config.xxhdpi.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~a3kaf9yQbBVzQXjxcaj8Pw==/com.google.android.apps.translate-0V6ZH3S_-Ti1P9EpMa-Q9A==/base.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~MTf4_tJbqo2VT-g8vLBFkQ==/com.truecaller-bUv78Ou8nOTIpztM0M2D2Q==/base.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~MTf4_tJbqo2VT-g8vLBFkQ==/com.truecaller-bUv78Ou8nOTIpztM0M2D2Q==/split_config.arm64_v8a.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~MTf4_tJbqo2VT-g8vLBFkQ==/com.truecaller-bUv78Ou8nOTIpztM0M2D2Q==/split_config.xxhdpi.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~MTf4_tJbqo2VT-g8vLBFkQ==/com.truecaller-bUv78Ou8nOTIpztM0M2D2Q==/split_insights_category_model.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~MTf4_tJbqo2VT-g8vLBFkQ==/com.truecaller-bUv78Ou8nOTIpztM0M2D2Q==/split_insights_category_model.config.arm64_v8a.apk' with 1 weak references
+E/flutter (23262): [ERROR:flutter/runtime/dart_vm_initializer.cc(40)] Unhandled Exception: PlatformException(permissionRequestInProgress, Another permission request is already in progress, null, null)
+E/flutter (23262): #0      StandardMethodCodec.decodeEnvelope (package:flutter/src/services/message_codecs.dart:653:7)
+E/flutter (23262): #1      MethodChannel._invokeMethod (package:flutter/src/services/platform_channel.dart:366:18)
+E/flutter (23262): <asynchronous suspension>
+E/flutter (23262): #2      NotificationService.requestPermissions (package:agent_go/services/notification_service.dart:43:8)
+E/flutter (23262): <asynchronous suspension>
+E/flutter (23262): 
+I/ImeTracker(23262): com.agentgo.agent_go:d4fba6f6: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT
+W/WindowOnBackDispatcher(23262): sendCancelIfRunning: isInProgress=falsecallback=ImeCallback=ImeOnBackInvokedCallback@32564325 Callback=android.window.IOnBackInvokedCallback$Stub$Proxy@67668d8
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+I/ImeTracker(23262): com.agentgo.agent_go:d4fba6f6: onCancelled at PHASE_CLIENT_ANIMATION_CANCEL
+D/FlutterJNI(23262): Sending viewport metrics to the engine.
+I/ImeTracker(23262): com.agentgo.agent_go:fe65764b: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+I/ImeTracker(23262): com.agentgo.agent_go:fe65764b: onFailed at PHASE_CLIENT_VIEW_SERVED
+D/CompatibilityChangeReporter(23262): Compat change id reported: 78294732; UID 11145; state: ENABLED
+I/HandWritingStubImpl(23262): refreshLastKeyboardType: 1
+I/HandWritingStubImpl(23262): getCurrentKeyboardType: 1
+I/ScrollIdentify(23262): on fling
+I/ScrollIdentify(23262): on fling
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+E/BLASTBufferQueue(23262): [SurfaceView[com.agentgo.agent_go/com.agentgo.agent_go.MainActivity]#1](f:1,a:4) acquireNextBufferLocked: Can't acquire next buffer. Already acquired max frames 4 max:2 + 2
+W/WindowOnBackDispatcher(23262): OnBackInvokedCallback is not enabled for the application.
+W/WindowOnBackDispatcher(23262): Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+I/ScrollIdentify(23262): on fling
+I/gentgo.agent_go(23262): Waiting for a blocking GC ProfileSaver
+I/gentgo.agent_go(23262): Background concurrent mark compact GC freed 1470KB AllocSpace bytes, 2(104KB) LOS objects, 49% free, 4733KB/9467KB, paused 556us,6.409ms total 104.932ms
+I/gentgo.agent_go(23262): WaitForGcToComplete blocked ProfileSaver on Background for 49.302ms
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~5mnJg5ZIDFTFh-Gbrw0UmQ==/cn.wps.moffice_eng-u-zoO9_nhpInlDe3vIkHPQ==/base.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~5mnJg5ZIDFTFh-Gbrw0UmQ==/cn.wps.moffice_eng-u-zoO9_nhpInlDe3vIkHPQ==/split_config.arm64_v8a.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~5mnJg5ZIDFTFh-Gbrw0UmQ==/cn.wps.moffice_eng-u-zoO9_nhpInlDe3vIkHPQ==/split_config.en.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~5mnJg5ZIDFTFh-Gbrw0UmQ==/cn.wps.moffice_eng-u-zoO9_nhpInlDe3vIkHPQ==/split_config.xxhdpi.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~5mnJg5ZIDFTFh-Gbrw0UmQ==/cn.wps.moffice_eng-u-zoO9_nhpInlDe3vIkHPQ==/split_vassonic.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~5mnJg5ZIDFTFh-Gbrw0UmQ==/cn.wps.moffice_eng-u-zoO9_nhpInlDe3vIkHPQ==/split_vassonic.config.xxhdpi.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~a3kaf9yQbBVzQXjxcaj8Pw==/com.google.android.apps.translate-0V6ZH3S_-Ti1P9EpMa-Q9A==/base.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~wtLCafNCkZpsBnSqqOkPtA==/com.google.android.marvin.talkback-v47f93JOID1_xDNemBE1iA==/base.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~wtLCafNCkZpsBnSqqOkPtA==/com.google.android.marvin.talkback-v47f93JOID1_xDNemBE1iA==/split_config.arm64_v8a.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~MTf4_tJbqo2VT-g8vLBFkQ==/com.truecaller-bUv78Ou8nOTIpztM0M2D2Q==/base.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~MTf4_tJbqo2VT-g8vLBFkQ==/com.truecaller-bUv78Ou8nOTIpztM0M2D2Q==/split_config.arm64_v8a.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~MTf4_tJbqo2VT-g8vLBFkQ==/com.truecaller-bUv78Ou8nOTIpztM0M2D2Q==/split_config.xxhdpi.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~MTf4_tJbqo2VT-g8vLBFkQ==/com.truecaller-bUv78Ou8nOTIpztM0M2D2Q==/split_insights_category_model.apk' with 1 weak references
+W/gentgo.agent_go(23262): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~MTf4_tJbqo2VT-g8vLBFkQ==/com.truecaller-bUv78Ou8nOTIpztM0M2D2Q==/split_insights_category_model.config.arm64_v8a.apk' with 1 weak references
+I/ScrollIdentify(23262): on fling
+Lost connection to device.

@@ -1,0 +1,12 @@
+Launching lib/main.dart on 22041216I in debug mode...
+Running Gradle task 'assembleDebug'...                          
+Error: unable to find directory entry in pubspec.yaml: /Users/cibirajanv/AgentGo/agent_go_app/assets/images/
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Running Gradle task 'assembleDebug'...                             77.4s
+✓ Built build/app/outputs/flutter-apk/app-debug.apk
+Installing build/app/outputs/flutter-apk/app-debug.apk...           6.9s
+D/FlutterJNI(21122): Beginning load of flutter...
+D/FlutterJNI(21122): flutter (null) was loaded normally!
+I/flutter (21122): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+Error connecting to the service protocol: failed to connect to http://127.0.0.1:59476/YbVyJ2X0Kig=/ HttpException: Connection closed before full header was received, uri = http://127.0.0.1:59476/YbVyJ2X0Kig=/ws
