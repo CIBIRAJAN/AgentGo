@@ -1003,26 +1003,24 @@ async function showAgentClients(agentId, agentName) {
   document.getElementById('revenue-view').classList.add('hidden');
   document.getElementById('plans-view').classList.add('hidden');
   document.getElementById('celebrations-view').classList.add('hidden');
-  document.getElementById('actions-bar').classList.add('hidden');
+  document.getElementById('actions-bar').classList.remove('hidden');
 
   const backBtn = `
     <button onclick="window.goBackToAgents()" class="icon-btn" style="margin-right: 15px; background: var(--input-bg); border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; cursor: pointer; color: var(--text-main);">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </button>
   `;
-  const syncBtn = `
-    <button onclick="window.openTransferAll('${agentId}', '${agentName}')" class="secondary-btn" style="padding: 8px 16px; font-size: 13px; margin-left: auto;">
-      Transfer All Clients
-    </button>
-  `;
-
-  pageTitle.innerHTML = `
-    <div style="display: flex; align-items: center; width: 100%;">
-      ${backBtn} 
-      <span>Clients of ${agentName}</span>
-      ${syncBtn}
+  
+  const actionsBar = document.getElementById('actions-bar');
+  actionsBar.innerHTML = `
+    <div style="display: flex; gap: 12px; width: 100%; justify-content: flex-end;">
+      <button onclick="window.openTransferAll('${agentId}', '${agentName}')" class="primary-btn" style="background: var(--warning); color: #000; border: none; font-weight: 600;">
+        Transfer All Clients
+      </button>
     </div>
   `;
+
+  pageTitle.innerHTML = `${backBtn} <span>Clients of ${agentName}</span>`;
 
   try {
     const { data: clients, error, count } = await supabase
@@ -1032,13 +1030,7 @@ async function showAgentClients(agentId, agentName) {
 
     if (error) throw error;
 
-    pageTitle.innerHTML = `
-      <div style="display: flex; align-items: center; width: 100%;">
-        ${backBtn} 
-        <span>Clients of ${agentName} <span style="font-size: 16px; opacity: 0.7; font-weight: 400; margin-left: 10px;">(${count || 0} Clients)</span></span>
-        ${syncBtn}
-      </div>
-    `;
+    pageTitle.innerHTML = `${backBtn} <span>Clients of ${agentName} <span style="font-size: 16px; opacity: 0.7; font-weight: 400; margin-left: 10px;">(${count || 0} Clients)</span></span>`;
 
     if (clients.length === 0) {
       tbody.innerHTML = '<tr><td colspan="5" class="loading">No clients found for this agent</td></tr>';
@@ -1325,7 +1317,23 @@ window.goBackToAgents = function() {
 
   agentsView.classList.remove('hidden');
   clientsView.classList.add('hidden');
+  
+  // Restore main actions bar (The "Add Agent" button)
   actionsBar.classList.remove('hidden');
+  actionsBar.innerHTML = `
+    <div style="flex: 1;"></div>
+    <button class="primary-btn" id="show-add-modal">Add New Agent</button>
+  `;
+  
+  // Re-attach event listener for show-add-modal
+  document.getElementById('show-add-modal').addEventListener('click', () => {
+    document.getElementById('add-user-form').reset();
+    document.getElementById('credentials-box').classList.add('hidden');
+    document.getElementById('add-error').innerText = '';
+    document.getElementById('add-success').innerText = '';
+    document.getElementById('add-modal').classList.remove('hidden');
+  });
+
   pageTitle.innerText = 'Manage Active Agents';
   
   // Ensure the "Agents" tab is active in the sidebar
