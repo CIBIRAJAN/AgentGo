@@ -12,6 +12,60 @@ let session = null;
 let loading = true;
 let users = [];
 
+// Global Pagination State
+const pgState = {
+  agents: { current: 1, limit: 10 },
+  revenuePayments: { current: 1, limit: 10 },
+  revenueSubs: { current: 1, limit: 10 },
+  celebrations: { current: 1, limit: 10 },
+  plans: { current: 1, limit: 10 },
+  agentClients: { current: 1, limit: 10 },
+  agentDues: { current: 1, limit: 10 }
+};
+
+window.handlePaginationChange = (key, page, updateFnName, id = null) => {
+  pgState[key].current = page;
+  if (id) window[updateFnName](id);
+  else window[updateFnName]();
+};
+
+window.handlePaginationLimitChange = (key, limit, updateFnName, id = null) => {
+  pgState[key].limit = parseInt(limit) || 10;
+  pgState[key].current = 1;
+  if (id) window[updateFnName](id);
+  else window[updateFnName]();
+};
+
+function renderPaginationControls(totalItems, stateKey, updateFnName, id = null) {
+  const state = pgState[stateKey];
+  const totalPages = Math.ceil(totalItems / state.limit) || 1;
+  if (state.current > totalPages) state.current = totalPages;
+
+  const idArg = id ? `'${id}'` : 'null';
+
+  return `
+    <div class="pagination-container">
+      <div class="pagination-limit">
+        <span>Show</span>
+        <input type="number" value="${state.limit}" min="1" max="500" 
+          onchange="window.handlePaginationLimitChange('${stateKey}', this.value, '${updateFnName}', ${idArg})">
+        <span>per page</span>
+      </div>
+      <div class="pagination-nav">
+        <button class="pagination-btn" ${state.current <= 1 ? 'disabled' : ''} 
+          onclick="window.handlePaginationChange('${stateKey}', ${state.current - 1}, '${updateFnName}', ${idArg})">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <span class="pagination-info">${state.current} / ${totalPages}</span>
+        <button class="pagination-btn" ${state.current >= totalPages ? 'disabled' : ''} 
+          onclick="window.handlePaginationChange('${stateKey}', ${state.current + 1}, '${updateFnName}', ${idArg})">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
 async function init() {
   const { data: { session: currentSession } } = await supabase.auth.getSession();
   session = currentSession;
@@ -42,10 +96,8 @@ function render() {
       <div class="auth-container">
         <div class="auth-card">
           <div class="logo">
-            <svg viewBox="0 0 24 24" fill="none" class="shield-icon" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-            <h2>AgentGo Admin</h2>
+            <img src="/AgentGo/logo-with-text.png" alt="AgentGo Logo" style="width: 140px; height: auto; margin-bottom: 0;" />
+            <h2 style="font-weight: 800; letter-spacing: -1px; margin-top: 10px; color: var(--primary);">Admin</h2>
           </div>
           <form id="login-form">
             <div class="input-group">
@@ -85,11 +137,9 @@ function render() {
     app.innerHTML = `
       <div class="dashboard">
         <aside class="sidebar">
-          <div class="logo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-            <h2>AgentGo</h2>
+          <div class="logo" style="margin-bottom: 48px; cursor: pointer;" onclick="window.location.hash='#agents'">
+            <img src="/AgentGo/app-icon.png" alt="AgentGo" style="width: 50px; height: 50px; border-radius: 12px; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);" />
+            <h2 style="font-size: 22px; font-weight: 800; letter-spacing: -1px;">AgentGo</h2>
           </div>
           <nav>
             <a href="#" class="tab-link active" data-tab="agents">Agents</a>
@@ -145,6 +195,7 @@ function render() {
                     <tr><td colspan="7" class="loading">Loading agents...</td></tr>
                   </tbody>
                 </table>
+                <div id="agents-pagination"></div>
             </div>
           </div>
 
@@ -175,6 +226,7 @@ function render() {
                     <thead><tr><th>Agent</th><th>Plan</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
                     <tbody id="revenue-table-body"></tbody>
                   </table>
+                  <div id="revenue-payments-pagination"></div>
                 </div>
 
                 <div class="card">
@@ -183,6 +235,7 @@ function render() {
                     <thead><tr><th>Agent</th><th>Stripe ID</th><th>Period End</th><th>Auto-Renew</th><th>Actions</th></tr></thead>
                     <tbody id="payout-table-body"></tbody>
                   </table>
+                  <div id="revenue-subs-pagination"></div>
                 </div>
             </div>
           </div>
@@ -197,19 +250,21 @@ function render() {
                     <thead><tr><th>Event Name</th><th>Date</th><th>Theme color</th><th>Image</th><th>Actions</th></tr></thead>
                     <tbody id="celebrations-table-body"></tbody>
                 </table>
+                <div id="celebrations-pagination"></div>
              </div>
           </div>
 
           <div class="view hidden" id="plans-view">
              <div class="view-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                <h2 style="margin:0;">Subscription Tiers</h2>
+                <h2 style="margin:0;">Manage Subscription Plans</h2>
                 <button class="primary-btn" id="show-add-plan-modal" style="width:auto; padding:10px 20px;">+ Create New Plan</button>
              </div>
              <div class="card">
                 <table class="data-table">
-                    <thead><tr><th>Plan Tier</th><th>Monthly Price</th><th>Feature Count</th><th>Actions</th></tr></thead>
+                    <thead><tr><th>Plan</th><th>Price</th><th>Features</th><th>Actions</th></tr></thead>
                     <tbody id="plans-table-body"></tbody>
                 </table>
+                <div id="plans-pagination"></div>
              </div>
           </div>
 
@@ -292,6 +347,11 @@ function render() {
             </div>
           </div>
         </main>
+        <button id="scroll-top-btn" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" title="Scroll to Top">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="24" height="24">
+                <path d="M5 15l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
       </div>
 
       <!-- Add User Modal -->
@@ -495,6 +555,16 @@ function render() {
       </div>
     `;
 
+    // Scroll to top button visibility
+    window.addEventListener('scroll', () => {
+        const btn = document.getElementById('scroll-top-btn');
+        if (window.scrollY > 300) {
+            btn.classList.add('visible');
+        } else {
+            btn.classList.remove('visible');
+        }
+    });
+
     document.getElementById('logout-btn').addEventListener('click', async () => {
       await supabase.auth.signOut();
     });
@@ -609,6 +679,11 @@ function render() {
       const isDark = !document.body.classList.contains('dark-mode');
       setDarkMode(isDark);
       localStorage.setItem('agentgo-theme', isDark ? 'dark' : 'light');
+      
+      // Re-render chart if on revenue view with cached data
+      if (window.lastRevenuePayments && window.location.hash === '#revenue') {
+          renderRevenueChart(window.lastRevenuePayments);
+      }
     });
 
     // Form logic
@@ -844,7 +919,8 @@ window.openAgentDetail = async function(id) {
     const detailView = document.getElementById('agent-detail-view');
     const actionsBar = document.getElementById('actions-bar');
     const pageTitle = document.getElementById('page-title');
-
+    const isNewDetail = detailView.classList.contains('hidden');
+    
     agentsView.classList.add('hidden');
     actionsBar.classList.add('hidden');
     detailView.classList.remove('hidden');
@@ -863,8 +939,10 @@ window.openAgentDetail = async function(id) {
         };
     });
 
-    // Reset to first tab
-    detailView.querySelector('[data-modaltab="info"]').click();
+    // Only reset to first tab if we just opened this agent from the list
+    if (isNewDetail) {
+        detailView.querySelector('[data-modaltab="info"]').click();
+    }
 
     try {
         const { data: user, error: userError } = await supabase.from('user').select('*').eq('id', id).single();
@@ -906,10 +984,12 @@ window.openAgentDetail = async function(id) {
                         <tbody>
                             ${payments.map(p => `
                                 <tr>
-                                    <td style="padding-left: 32px;">${new Date(p.created_at).toLocaleDateString()}</td>
-                                    <td style="font-weight:600; color:var(--primary);">₹${Number(p.amount).toLocaleString()}</td>
-                                    <td><span class="badge" style="background:rgba(16,185,129,0.1); color:#10b981; border:none;">${p.status.toUpperCase()}</span></td>
-                                    <td style="padding-right: 32px; font-family:monospace; font-size:11px; opacity:0.6;">${p.stripe_payment_intent_id || 'N/A'}</td>
+                                    <td data-label="Date" style="padding-left: 32px;">${new Date(p.created_at).toLocaleDateString()}</td>
+                                    <td data-label="Amount" style="font-weight:600; color:var(--primary);">₹${Number(p.amount).toLocaleString()}</td>
+                                    <td data-label="Status">
+                                        <span class="badge" style="background:rgba(16,185,129,0.1); color:#10b981; border:none;">${p.status.toUpperCase()}</span>
+                                    </td>
+                                    <td data-label="Reference" style="padding-right: 32px; font-family:monospace; font-size:11px; opacity:0.6;">${p.stripe_payment_intent_id || 'N/A'}</td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -937,23 +1017,30 @@ window.openAgentDetail = async function(id) {
                             </tr>
                         </thead>
                         <tbody>
-                            ${qClients.map(c => `
-                                <tr>
-                                    <td style="padding-left: 32px;"><strong>${c.full_name || 'N/A'}</strong></td>
-                                    <td><code style="font-size:11px; background: var(--input-bg); padding: 4px 8px; border-radius: 4px;">${c.Policy_Number || 'N/A'}</code></td>
-                                    <td style="font-weight:600;">₹${c.Premium ? Number(c.Premium.replace(/[^0-9.]/g, '')).toLocaleString('en-IN') : 'N/A'}</td>
-                                    <td>${c.Mode || 'N/A'}</td>
-                                    <td style="padding-right: 32px;">
-                                        <button class="eye-btn" onclick="window.openClientDetail('${c.id}')" title="View Details" style="width: 32px; height: 32px;">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                                        </button>
-                                    </td>
-                                </tr>
-                            `).join('')}
+                            ${(() => {
+                                const start = (pgState.agentClients.current - 1) * pgState.agentClients.limit;
+                                const paginated = qClients.slice(start, start + pgState.agentClients.limit);
+                                return paginated.map(c => `
+                                    <tr>
+                                        <td data-label="Client Name" style="padding-left: 32px;"><strong>${c.full_name || 'N/A'}</strong></td>
+                                        <td data-label="Policy Number"><code style="font-size:11px; background: var(--input-bg); padding: 4px 8px; border-radius: 4px;">${c.Policy_Number || 'N/A'}</code></td>
+                                        <td data-label="Premium" style="font-weight:600;">₹${c.Premium ? Number(c.Premium.replace(/[^0-9.]/g, '')).toLocaleString('en-IN') : 'N/A'}</td>
+                                        <td data-label="Mode">${c.Mode || 'N/A'}</td>
+                                        <td data-label="Actions" style="padding-right: 32px;">
+                                            <button class="eye-btn" onclick="window.openClientDetail('${c.id}')" title="View Details" style="width: 32px; height: 32px;">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('');
+                            })()}
                         </tbody>
                     </table>
+                    <div id="agent-clients-pagination"></div>
                 </div>
             `;
+            const clientsPaginationDiv = document.getElementById('agent-clients-pagination');
+            if (clientsPaginationDiv) clientsPaginationDiv.innerHTML = renderPaginationControls(qClients.length, 'agentClients', 'openAgentDetail', id);
         }
 
         // Fetch Monthly Dues - Show ALL statuses to help admin see history
@@ -987,7 +1074,13 @@ window.openAgentDetail = async function(id) {
                 <div id="ad-dues-table-container"></div>
             `;
 
+            const selector = document.getElementById('ad-dues-month-selector');
+            if (window.lastSelectedMonth && uniqueMonths.includes(window.lastSelectedMonth)) {
+                selector.value = window.lastSelectedMonth;
+            }
+
             const renderMonthDues = (month) => {
+                window.lastSelectedMonth = month;
                 const monthDues = grouped[month];
                 document.getElementById('ad-dues-table-container').innerHTML = `
                     <div class="card" style="padding:0; overflow: hidden;">
@@ -1002,29 +1095,39 @@ window.openAgentDetail = async function(id) {
                                 </tr>
                             </thead>
                             <tbody>
-                                ${monthDues.map(d => `
-                                    <tr>
-                                        <td style="padding-left: 32px;"><strong>${d.customer_name || 'N/A'}</strong></td>
-                                        <td style="padding-left: 32px;"><code style="font-size:11px; background: var(--input-bg); padding: 4px 8px; border-radius: 4px;">${d.policy_number}</code></td>
-                                        <td style="font-weight: 600;">₹${Number(d.premium_amount || 0).toLocaleString('en-IN')}</td>
-                                        <td>${d.due_date ? new Date(d.due_date).toLocaleDateString() : 'N/A'}</td>
-                                        <td style="padding-right: 32px;">
-                                            <span class="badge" style="${
-                                                d.status === 'paid' ? 'background:rgba(16,185,129,0.1); color:#10b981;' : 
-                                                d.status === 'overdue' ? 'background:rgba(239,68,68,0.1); color:#ef4444;' :
-                                                'background:rgba(245,158,11,0.1); color:#f59e0b;'
-                                            } border:none;">${d.status.toUpperCase()}</span>
-                                        </td>
-                                    </tr>
-                                `).join('')}
+                                ${(() => {
+                                    const start = (pgState.agentDues.current - 1) * pgState.agentDues.limit;
+                                    const paginated = monthDues.slice(start, start + pgState.agentDues.limit);
+                                    return paginated.map(d => `
+                                        <tr>
+                                            <td data-label="Client Name" style="padding-left: 32px;"><strong>${d.customer_name || 'N/A'}</strong></td>
+                                            <td data-label="Policy Number" style="padding-left: 32px;"><code style="font-size:11px; background: var(--input-bg); padding: 4px 8px; border-radius: 4px;">${d.policy_number}</code></td>
+                                            <td data-label="Premium Amount" style="font-weight: 600;">₹${Number(d.premium_amount || 0).toLocaleString('en-IN')}</td>
+                                            <td data-label="Due Date">${d.due_date ? new Date(d.due_date).toLocaleDateString() : 'N/A'}</td>
+                                            <td data-label="Status" style="padding-right: 32px;">
+                                                <span class="badge" style="${
+                                                    d.status === 'paid' ? 'background:rgba(16,185,129,0.1); color:#10b981;' : 
+                                                    d.status === 'overdue' ? 'background:rgba(239,68,68,0.1); color:#ef4444;' :
+                                                    'background:rgba(245,158,11,0.1); color:#f59e0b;'
+                                                } border:none;">${d.status.toUpperCase()}</span>
+                                            </td>
+                                        </tr>
+                                    `).join('');
+                                })()}
                             </tbody>
                         </table>
+                        <div id="agent-dues-pagination"></div>
                     </div>
                 `;
+                const duesPaginationDiv = document.getElementById('agent-dues-pagination');
+                if (duesPaginationDiv) duesPaginationDiv.innerHTML = renderPaginationControls(monthDues.length, 'agentDues', 'openAgentDetail', id);
             };
 
-            renderMonthDues(currentMonth);
-            document.getElementById('ad-dues-month-selector').onchange = (e) => renderMonthDues(e.target.value);
+            renderMonthDues(selector.value);
+            selector.onchange = (e) => {
+                pgState.agentDues.current = 1;
+                renderMonthDues(e.target.value);
+            }
         }
     } catch(err) {
         console.error("AgentDetail Error:", err);
@@ -1107,7 +1210,11 @@ async function loadUsers() {
       window.agentMap[u.id] = u.user_metadata?.full_name || 'Unknown Agent';
     });
 
-    tbody.innerHTML = agents.map(u => {
+    const totalAgents = agents.length;
+    const start = (pgState.agents.current - 1) * pgState.agents.limit;
+    const paginatedAgents = agents.slice(start, start + pgState.agents.limit);
+
+    tbody.innerHTML = paginatedAgents.map(u => {
       const isCurrentAdmin = u.id === session.user.id;
       const role = u.user_metadata?.role || 'agent';
 
@@ -1120,20 +1227,20 @@ async function loadUsers() {
 
       return `
         <tr class="agent-row" data-agent-id="${u.id}" data-agent-name="${u.user_metadata?.full_name || 'N/A'}" style="cursor: pointer;">
-          <td>
+          <td data-label="Info">
             <button class="eye-btn" onclick="event.stopPropagation(); window.openAgentDetail('${u.id}')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
             </button>
           </td>
-          <td>
+          <td data-label="Name">
             <strong>${u.user_metadata?.full_name || 'N/A'}</strong>
             ${isCurrentAdmin ? '<span style="font-size: 10px; background: var(--primary); color: white; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">YOU</span>' : ''}
           </td>
-          <td><code style="background: var(--input-bg); padding: 4px 8px; border-radius: 6px;">${u.agent_code || 'N/A'}</code></td>
-          <td>${u.email}</td>
-          <td>${new Date(u.created_at).toLocaleDateString()}</td>
-          <td><span class="badge" style="${badgeStyle}">${statusText}</span></td>
-          <td>
+          <td data-label="Agent Code"><code style="background: var(--input-bg); padding: 4px 8px; border-radius: 6px;">${u.agent_code || 'N/A'}</code></td>
+          <td data-label="Email">${u.email}</td>
+          <td data-label="Created At">${new Date(u.created_at).toLocaleDateString()}</td>
+          <td data-label="Status"><span class="badge" style="${badgeStyle}">${statusText}</span></td>
+          <td data-label="Actions">
             <div style="display: flex; gap: 8px;" onclick="event.stopPropagation()">
               ${!isCurrentAdmin ? `
                 ${statusValue !== 'deleted' ? `
@@ -1147,6 +1254,8 @@ async function loadUsers() {
         </tr>
       `;
     }).join('');
+
+    document.getElementById('agents-pagination').innerHTML = renderPaginationControls(totalAgents, 'agents', 'loadUsers');
 
     // Attach click listener to row
     document.querySelectorAll('.agent-row').forEach(row => {
@@ -1178,6 +1287,8 @@ async function loadUsers() {
     tbody.innerHTML = `<tr><td colspan="5" class="error-msg">Could not load users: ${errorMsg}</td></tr>`;
   }
 }
+
+window.loadUsers = loadUsers;
 
 init();
 
@@ -1315,32 +1426,44 @@ async function loadRevenue() {
       return;
     }
 
+    const startPay = (pgState.revenuePayments.current - 1) * pgState.revenuePayments.limit;
+    const paginatedPayments = payments.slice(startPay, startPay + pgState.revenuePayments.limit);
+
     // Revenue Management Table (Payment History)
-    tbody.innerHTML = payments.map(p => `
+    tbody.innerHTML = paginatedPayments.map(p => `
       <tr>
-        <td><strong>${p.user?.name || 'N/A'}</strong></td>
-        <td>Pro Monthly</td>
-        <td>₹${Number(p.amount).toLocaleString('en-IN')}</td>
-        <td><span class="badge" style="${p.status === 'succeeded' ? 'background: rgba(16, 185, 129, 0.1) ; color: #10b981;' : 'background: rgba(239, 68, 68, 0.1); color: #ef4444;'}">${p.status.toUpperCase()}</span></td>
-        <td>${new Date(p.created_at).toLocaleDateString()}</td>
+        <td data-label="Agent"><strong>${p.user?.name || 'N/A'}</strong></td>
+        <td data-label="Plan">Pro Monthly</td>
+        <td data-label="Amount">₹${Number(p.amount).toLocaleString('en-IN')}</td>
+        <td data-label="Status"><span class="badge" style="${p.status === 'succeeded' ? 'background: rgba(16, 185, 129, 0.1) ; color: #10b981;' : 'background: rgba(239, 68, 68, 0.1); color: #ef4444;'}">${p.status.toUpperCase()}</span></td>
+        <td data-label="Date">${new Date(p.created_at).toLocaleDateString()}</td>
       </tr>
     `).join('');
 
+    document.getElementById('revenue-payments-pagination').innerHTML = renderPaginationControls(payments.length, 'revenuePayments', 'loadRevenue');
+
+    const startSub = (pgState.revenueSubs.current - 1) * pgState.revenueSubs.limit;
+    const paginatedSubs = subs.slice(startSub, startSub + pgState.revenueSubs.limit);
+
     // Agent Payment Access Table (Active Subscriptions)
-    payoutBody.innerHTML = subs.map(s => `
+    payoutBody.innerHTML = paginatedSubs.map(s => `
       <tr>
-        <td><strong>${s.user?.name || s.user?.email || 'N/A'}</strong></td>
-        <td style="font-family: monospace; font-size: 11px;">${s.user?.stripe_customer_id || 'Not Linked'}</td>
-        <td>${s.current_period_end ? new Date(s.current_period_end).toLocaleDateString() : 'N/A'}</td>
-        <td>${s.cancel_at_period_end ? 'No' : 'Yes'}</td>
-        <td><button class="secondary-btn" style="padding: 4px 8px; font-size: 11px;" onclick="window.openAgentDetail('${s.user_id}')">View Profile</button></td>
+        <td data-label="Agent"><strong>${s.user?.name || s.user?.email || 'N/A'}</strong></td>
+        <td data-label="Stripe ID" style="font-family: monospace; font-size: 11px;">${s.user?.stripe_customer_id || 'Not Linked'}</td>
+        <td data-label="Period End">${s.current_period_end ? new Date(s.current_period_end).toLocaleDateString() : 'N/A'}</td>
+        <td data-label="Auto-Renew">${s.cancel_at_period_end ? 'No' : 'Yes'}</td>
+        <td data-label="Actions"><button class="secondary-btn" style="padding: 4px 8px; font-size: 11px;" onclick="window.openAgentDetail('${s.user_id}')">View Profile</button></td>
       </tr>
     `).join('');
+
+    document.getElementById('revenue-subs-pagination').innerHTML = renderPaginationControls(subs.length, 'revenueSubs', 'loadRevenue');
 
   } catch (e) {
     console.error('Revenue Loading Error:', e);
   }
 }
+
+window.loadRevenue = loadRevenue;
 
 function renderRevenueChart(payments) {
   const ctx = document.getElementById('revenue-chart').getContext('2d');
@@ -1362,6 +1485,11 @@ function renderRevenueChart(payments) {
   const dataPoints = monthlyRevenue.slice(Math.max(0, currentMonth - 5), currentMonth + 1);
 
   if (!Chart) return;
+  window.lastRevenuePayments = payments; // Cache for theme toggling
+
+  const isDarkMode = document.body.classList.contains('dark-mode');
+  const textColor = isDarkMode ? '#e2e8f0' : '#475569';
+  const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)';
 
   revenueChart = new Chart(ctx, {
     type: 'line',
@@ -1388,12 +1516,12 @@ function renderRevenueChart(payments) {
       scales: {
         y: {
           beginAtZero: true,
-          grid: { color: 'rgba(255,255,255,0.05)' },
-          ticks: { color: 'rgba(255,255,255,0.5)' }
+          grid: { color: gridColor },
+          ticks: { color: textColor }
         },
         x: {
           grid: { display: false },
-          ticks: { color: 'rgba(255,255,255,0.5)' }
+          ticks: { color: textColor }
         }
       }
     }
@@ -1426,20 +1554,23 @@ async function loadCelebrations() {
       return;
     }
 
-    tbody.innerHTML = celebrations.map(c => `
+    const start = (pgState.celebrations.current - 1) * pgState.celebrations.limit;
+    const paginatedCelebrations = celebrations.slice(start, start + pgState.celebrations.limit);
+
+    tbody.innerHTML = paginatedCelebrations.map(c => `
       <tr>
-        <td><strong>${c.name}</strong></td>
-        <td>${c.date}</td>
-        <td>
+        <td data-label="Event Name"><strong>${c.name}</strong></td>
+        <td data-label="Date">${c.date}</td>
+        <td data-label="Theme Color">
           <div style="display: flex; align-items: center; gap: 8px;">
             <div style="width: 20px; height: 20px; border-radius: 4px; background: ${c.theme_color_hex}"></div>
             ${c.theme_color_hex}
           </div>
         </td>
-        <td>
+        <td data-label="Image">
           <img src="${c.image_url}" alt="${c.name}" style="width: 60px; height: 40px; border-radius: 4px; object-fit: cover;" />
         </td>
-        <td>
+        <td data-label="Actions">
           <div style="display: flex; gap: 8px;">
             <button class="secondary-btn" onclick="window.openEditCelebration('${c.id}')" style="font-size: 11px; padding: 4px 8px;">Edit</button>
             <button class="secondary-btn" onclick="window.deleteCelebration('${c.id}')" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3); font-size: 11px; padding: 4px 8px;">Delete</button>
@@ -1447,11 +1578,17 @@ async function loadCelebrations() {
         </td>
       </tr>
     `).join('');
+
+    const paginationDiv = document.getElementById('celebrations-pagination');
+    if (paginationDiv) paginationDiv.innerHTML = renderPaginationControls(celebrations.length, 'celebrations', 'loadCelebrations');
+
   } catch (e) {
     console.error(e);
     tbody.innerHTML = '<tr><td colspan="5" class="error-msg">Failed to load celebrations</td></tr>';
   }
 }
+
+window.loadCelebrations = loadCelebrations;
 
 window.openEditPlan = async function(id) {
   try {
@@ -1516,21 +1653,30 @@ async function loadPlans() {
     const order = { 'base': 1, 'mid': 2, 'premium': 3 };
     plans.sort((a,b) => (order[a.id] || 99) - (order[b.id] || 99));
 
-    tbody.innerHTML = plans.map(p => `
+    const start = (pgState.plans.current - 1) * pgState.plans.limit;
+    const paginatedPlans = plans.slice(start, start + pgState.plans.limit);
+
+    tbody.innerHTML = paginatedPlans.map(p => `
       <tr>
-        <td><strong>${p.title}</strong><br><small style="color:var(--text-muted);">${p.id.toUpperCase()}</small></td>
-        <td><span style="font-size:16px; font-weight:700; color:var(--primary);">₹${Number(p.price.replace(/[^0-9.]/g, '')).toLocaleString('en-IN')}</span></td>
-        <td>${p.features.length} Features</td>
-        <td>
+        <td data-label="Plan"><strong>${p.title}</strong><br><small style="color:var(--text-muted);">${p.id.toUpperCase()}</small></td>
+        <td data-label="Price"><span style="font-size:16px; font-weight:700; color:var(--primary);">₹${Number(p.price.replace(/[^0-9.]/g, '')).toLocaleString('en-IN')}</span></td>
+        <td data-label="Features">${p.features.length} Features</td>
+        <td data-label="Actions">
           <button class="secondary-btn" onclick="window.openEditPlan('${p.id}')">Edit Plan</button>
         </td>
       </tr>
     `).join('');
+
+    const paginationDiv = document.getElementById('plans-pagination');
+    if (paginationDiv) paginationDiv.innerHTML = renderPaginationControls(plans.length, 'plans', 'loadPlans');
+
   } catch (e) {
     console.error(e);
     tbody.innerHTML = '<tr><td colspan="4" class="error-msg">Failed to load plans</td></tr>';
   }
 }
+
+window.loadPlans = loadPlans;
 
 
 window.goBackToAgents = function() {
