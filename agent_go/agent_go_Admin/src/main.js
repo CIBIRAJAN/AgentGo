@@ -385,6 +385,7 @@ function render() {
             <button class="tab-btn active" data-modaltab="info">General Info</button>
             <button class="tab-btn" data-modaltab="stats">Platform Stats</button>
             <button class="tab-btn" data-modaltab="billing">Billing History</button>
+            <button class="tab-btn" data-modaltab="dues">Monthly Dues</button>
           </div>
           <div id="agent-modal-content">
              <div id="agent-tab-info">
@@ -406,6 +407,9 @@ function render() {
              </div>
              <div id="agent-tab-billing" class="hidden">
                  <div id="ad-billing-list" style="margin-top:20px;"></div>
+             </div>
+             <div id="agent-tab-dues" class="hidden">
+                 <div id="ad-dues-list" style="margin-top:20px;"></div>
              </div>
           </div>
         </div>
@@ -761,7 +765,7 @@ window.openAgentDetail = async function(id) {
     // Reset tabs
     modal.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     modal.querySelector('[data-modaltab="info"]').classList.add('active');
-    ['info', 'stats', 'billing'].forEach(c => {
+    ['info', 'stats', 'billing', 'dues'].forEach(c => {
         const el = document.getElementById(`agent-tab-${c}`);
         if(el) el.classList.toggle('hidden', c !== 'info');
     });
@@ -802,6 +806,39 @@ window.openAgentDetail = async function(id) {
                     </tbody>
                 </table>
             `;
+        }
+
+        // Fetch Monthly Dues
+        const { data: dues } = await supabase.from('monthly_dues').select('*').eq('user_id', id).order('due_date', { ascending: false });
+        const duesList = document.getElementById('ad-dues-list');
+        if (!dues || dues.length === 0) {
+            duesList.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">No pending dues found.</p>';
+        } else {
+            // Group by month
+            const grouped = {};
+            dues.forEach(d => {
+                if(!grouped[d.due_month]) grouped[d.due_month] = [];
+                grouped[d.due_month].push(d);
+            });
+
+            duesList.innerHTML = Object.keys(grouped).map(month => `
+                <div style="margin-bottom: 24px;">
+                    <h4 style="margin-bottom: 12px; color: var(--primary); font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">${month}</h4>
+                    <table class="data-table" style="font-size: 13px;">
+                        <thead><tr><th>Client</th><th>Premium</th><th>Due Date</th><th>Status</th></tr></thead>
+                        <tbody>
+                            ${grouped[month].map(d => `
+                                <tr>
+                                    <td><strong>${d.customer_name}</strong></td>
+                                    <td>₹${d.total_premium}</td>
+                                    <td>${new Date(d.due_date).toLocaleDateString()}</td>
+                                    <td><span class="badge" style="${d.status === 'paid' ? 'background:rgba(16,185,129,0.1); color:#10b981;' : 'background:rgba(245,158,11,0.1); color:#f59e0b;'} border:none;">${d.status.toUpperCase()}</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `).join('');
         }
     } catch(err) {
         console.error(err);
@@ -1381,10 +1418,12 @@ window.openTransferAll = async function(sourceAgentId, sourceAgentName) {
             btn.innerText = 'Transferring...';
             
             const { error: upError } = await supabase.from('client').update({ user_id: newAgentId }).eq('user_id', sourceAgentId);
+            await supabase.from('monthly_dues').update({ user_id: newAgentId }).eq('user_id', sourceAgentId);
+            
             if (upError) {
                 alert(upError.message);
             } else {
-                alert("All clients transferred successfully!");
+                alert("All clients and their dues transferred successfully!");
                 modal.classList.add('hidden');
                 goBackToAgents();
             }
@@ -1431,8 +1470,11 @@ window.openReassign = async function(clientId, clientName) {
         document.getElementById('confirm-reassign-btn').onclick = async () => {
             const newAgentId = select.value;
             const { error: upError } = await supabase.from('client').update({ user_id: newAgentId }).eq('id', clientId);
+            // Also transfer dues for this client
+            await supabase.from('monthly_dues').update({ user_id: newAgentId }).eq('client_id', clientId);
+
             if (!upError) {
-                alert("Client transferred successfully!");
+                alert("Client and their dues transferred successfully!");
                 modal.classList.add('hidden');
                 document.getElementById('client-detail-modal').classList.add('hidden');
                 loadUsers();
