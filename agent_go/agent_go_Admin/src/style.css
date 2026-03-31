@@ -328,7 +328,7 @@ body {
 }
 
 .data-table th {
-  padding: 16px 24px;
+  padding: 16px 32px;
   background: var(--table-header-bg);
   color: var(--text-muted);
   font-weight: 500;
@@ -339,7 +339,7 @@ body {
 }
 
 .data-table td {
-  padding: 16px 24px;
+  padding: 16px 32px;
   border-bottom: 1px solid var(--border-color);
   color: var(--text-main);
   font-size: 15px;
@@ -395,8 +395,9 @@ body {
   background: var(--modal-bg);
   border: 1px solid var(--border-color);
   border-radius: 20px;
-  width: 100%;
+  width: calc(100% - 40px);
   max-width: 450px;
+  margin: 20px;
   padding: 30px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
   transform: scale(1);
@@ -551,35 +552,54 @@ body {
   margin-bottom: 25px;
 }
 
+.modal-tabs {
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 25px;
+  display: flex !important;
+  gap: 28px !important;
+  align-items: center;
+}
+
 .tab-btn {
-  padding: 10px 15px;
+  padding: 12px 0;
   background: none;
   border: none;
   color: var(--text-muted);
   cursor: pointer;
   font-weight: 600;
   position: relative;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
   font-size: 14px;
+  opacity: 0.7;
 }
 
 .tab-btn:hover {
   color: var(--text-main);
+  opacity: 1;
 }
 
 .tab-btn.active {
   color: var(--primary);
+  opacity: 1;
 }
 
 .tab-btn.active::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: -1px;
   left: 0;
   right: 0;
-  height: 2px;
+  height: 3px;
   background: var(--primary);
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  animation: tabFade 0.3s ease;
+}
+
+@keyframes tabFade {
+  from { transform: scaleX(0); opacity: 0; }
+  to { transform: scaleX(1); opacity: 1; }
 }
 
 .detail-grid {
@@ -684,4 +704,103 @@ body {
     border-color: var(--primary);
     outline: none;
     box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+/* Responsive Utilities */
+.mobile-only { display: none !important; }
+.desktop-only { display: inline-flex !important; }
+.text-nowrap { white-space: nowrap; }
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 998;
+  transition: all 0.3s ease;
+}
+
+.overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@media (max-width: 1024px) {
+  .mobile-only { display: inline-flex !important; }
+  .desktop-only { display: none !important; }
+
+  .sidebar {
+    position: fixed;
+    left: -260px;
+    top: 0;
+    bottom: 0;
+    z-index: 1000;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 20px 0 50px rgba(0, 0, 0, 0.2);
+  }
+
+  .sidebar.active {
+    transform: translateX(260px);
+  }
+
+  .content {
+    padding: 24px 20px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .profile-header-container {
+    padding: 24px 20px !important;
+  }
+
+  .modal-tabs {
+    padding: 0 20px !important;
+  }
+
+  .auth-card {
+    padding: 30px 20px;
+    border-radius: 20px;
+  }
+
+  .card {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .data-table {
+    min-width: 600px; /* Force scroll on small screens */
+  }
+
+  .ad-tier-block {
+    text-align: left !important;
+    width: 100%;
+  }
+
+  header {
+    margin-bottom: 20px !important;
+  }
+
+  h1 {
+    font-size: 22px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-header-container {
+    padding: 20px 16px !important;
+  }
+
+  .data-table th, .data-table td {
+    padding: 12px 16px !important;
+  }
 }
