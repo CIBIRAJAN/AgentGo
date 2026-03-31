@@ -31,24 +31,24 @@ jobs:
         run: npm run build
         working-directory: agent_go/agent_go_Admin
 
-      # Build Mobile App (Flutter)
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.24.0'
-          channel: 'stable'
-          cache: true
-          
-      - name: Build Flutter Web
-        run: |
-          flutter pub get
-          flutter build web --release --base-href="/AgentGo/app/"
-        working-directory: agent_go/agent_go_app
-          
-      - name: Merge builds
-        run: |
-          mkdir -p agent_go/agent_go_Admin/dist/app
-          cp -r agent_go/agent_go_app/build/web/* agent_go/agent_go_Admin/dist/app/
+#      # Build Mobile App (Flutter)
+#      - name: Setup Flutter
+#        uses: subosito/flutter-action@v2
+#        with:
+#          flutter-version: '3.24.0'
+#          channel: 'stable'
+#          cache: true
+#          
+#      - name: Build Flutter Web
+#        run: |
+#          flutter pub get
+#          flutter build web --release --base-href="/AgentGo/app/"
+#        working-directory: agent_go/agent_go_app
+#          
+#      - name: Merge builds
+#        run: |
+#          mkdir -p agent_go/agent_go_Admin/dist/app
+#          cp -r agent_go/agent_go_app/build/web/* agent_go/agent_go_Admin/dist/app/
           
       - name: Setup Pages
         uses: actions/configure-pages@v4
