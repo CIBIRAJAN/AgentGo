@@ -1,10 +1,8 @@
-name: Deploy Admin Site
+name: Deploy Site
 
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'agent_go_Admin/**'
   workflow_dispatch:
 
 permissions:
@@ -23,23 +21,42 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-          cache-dependency-path: agent_go_Admin/package-lock.json
+          cache-dependency-path: agent_go/agent_go_Admin/package-lock.json
           
       - name: Install dependencies
         run: npm install
-        working-directory: agent_go_Admin
+        working-directory: agent_go/agent_go_Admin
         
-      - name: Build
+      - name: Build Admin
         run: npm run build
-        working-directory: agent_go_Admin
-        
+        working-directory: agent_go/agent_go_Admin
+
+      # Build Mobile App (Flutter)
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+          cache: true
+          
+      - name: Build Flutter Web
+        run: |
+          flutter pub get
+          flutter build web --release --base-href="/AgentGo/app/"
+        working-directory: agent_go/agent_go_app
+          
+      - name: Merge builds
+        run: |
+          mkdir -p agent_go/agent_go_Admin/dist/app
+          cp -r agent_go/agent_go_app/build/web/* agent_go/agent_go_Admin/dist/app/
+          
       - name: Setup Pages
         uses: actions/configure-pages@v4
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'agent_go_Admin/dist'
+          path: 'agent_go/agent_go_Admin/dist'
 
   deploy:
     needs: build
