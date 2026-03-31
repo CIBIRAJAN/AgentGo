@@ -445,6 +445,8 @@ function render() {
              <p>Reassigning <strong><span id="reassign-client-name"></span></strong></p>
           </div>
           <div class="input-group">
+              <label>Search Agent</label>
+              <input type="text" id="agent-search-input" placeholder="Search by name or code..." style="width:100%; border-radius:10px; margin-bottom: 10px;">
               <label>Select New Agent</label>
               <select id="new-agent-select" style="width:100%; padding:12px; border-radius:10px; background:var(--input-bg); border:1px solid var(--border-color); color:var(--text-main); font-family:inherit;">
               </select>
@@ -1008,7 +1010,19 @@ async function showAgentClients(agentId, agentName) {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </button>
   `;
-  pageTitle.innerHTML = `${backBtn} Clients of ${agentName}`;
+  const syncBtn = `
+    <button onclick="window.openTransferAll('${agentId}', '${agentName}')" class="secondary-btn" style="padding: 8px 16px; font-size: 13px; margin-left: auto;">
+      Transfer All Clients
+    </button>
+  `;
+
+  pageTitle.innerHTML = `
+    <div style="display: flex; align-items: center; width: 100%;">
+      ${backBtn} 
+      <span>Clients of ${agentName}</span>
+      ${syncBtn}
+    </div>
+  `;
 
   try {
     const { data: clients, error, count } = await supabase
@@ -1018,7 +1032,13 @@ async function showAgentClients(agentId, agentName) {
 
     if (error) throw error;
 
-    pageTitle.innerHTML = `${backBtn} Clients of ${agentName} <span style="font-size: 16px; opacity: 0.7; font-weight: 400; margin-left: 10px;">(${count || 0} Clients)</span>`;
+    pageTitle.innerHTML = `
+      <div style="display: flex; align-items: center; width: 100%;">
+        ${backBtn} 
+        <span>Clients of ${agentName} <span style="font-size: 16px; opacity: 0.7; font-weight: 400; margin-left: 10px;">(${count || 0} Clients)</span></span>
+        ${syncBtn}
+      </div>
+    `;
 
     if (clients.length === 0) {
       tbody.innerHTML = '<tr><td colspan="5" class="loading">No clients found for this agent</td></tr>';
@@ -1312,4 +1332,105 @@ window.goBackToAgents = function() {
   document.querySelectorAll('.tab-link').forEach(t => {
     t.classList.toggle('active', t.dataset.tab === 'agents');
   });
+};
+
+window.openTransferAll = async function(sourceAgentId, sourceAgentName) {
+    const modal = document.getElementById('reassign-modal');
+    document.getElementById('reassign-client-name').innerText = `ALL Clients of ${sourceAgentName}`;
+    modal.classList.remove('hidden');
+
+    try {
+        const { data } = await supabase.functions.invoke('get_agents');
+        const agents = data.users.filter(u => u.id !== sourceAgentId); // Don't transfer to self
+
+        const select = document.getElementById('new-agent-select');
+        const renderAgents = (filtered) => {
+            select.innerHTML = filtered.map(u => `
+                <option value="${u.id}">${u.user_metadata?.full_name || u.email} (${u.agent_code || 'No Code'})</option>
+            `).join('');
+        };
+
+        renderAgents(agents);
+
+        // Search logic
+        const searchInput = document.getElementById('agent-search-input');
+        searchInput.value = '';
+        searchInput.oninput = (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = agents.filter(u => 
+                (u.user_metadata?.full_name || '').toLowerCase().includes(query) || 
+                (u.email || '').toLowerCase().includes(query) ||
+                (u.agent_code || '').toLowerCase().includes(query)
+            );
+            renderAgents(filtered);
+        };
+
+        document.getElementById('confirm-reassign-btn').onclick = async () => {
+            if (!confirm(`Are you sure you want to transfer ALL clients from ${sourceAgentName} to the selected agent?`)) return;
+            
+            const newAgentId = select.value;
+            const btn = document.getElementById('confirm-reassign-btn');
+            btn.innerText = 'Transferring...';
+            
+            const { error: upError } = await supabase.from('client').update({ user_id: newAgentId }).eq('user_id', sourceAgentId);
+            if (upError) {
+                alert(upError.message);
+            } else {
+                alert("All clients transferred successfully!");
+                modal.classList.add('hidden');
+                goBackToAgents();
+            }
+            btn.innerText = 'Confirm Transfer';
+        };
+
+    } catch(err) {
+        alert("Error loading agents: " + err.message);
+    }
+};
+
+// Update standard openReassign to use search too
+const originalOpenReassign = window.openReassign;
+window.openReassign = async function(clientId, clientName) {
+    const modal = document.getElementById('reassign-modal');
+    document.getElementById('reassign-client-name').innerText = clientName;
+    modal.classList.remove('hidden');
+
+    try {
+        const { data } = await supabase.functions.invoke('get_agents');
+        const agents = data.users;
+
+        const select = document.getElementById('new-agent-select');
+        const renderAgents = (filtered) => {
+            select.innerHTML = filtered.map(u => `
+                <option value="${u.id}">${u.user_metadata?.full_name || u.email} (${u.agent_code || 'No Code'})</option>
+            `).join('');
+        };
+
+        renderAgents(agents);
+
+        const searchInput = document.getElementById('agent-search-input');
+        searchInput.value = '';
+        searchInput.oninput = (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = agents.filter(u => 
+                (u.user_metadata?.full_name || '').toLowerCase().includes(query) || 
+                (u.email || '').toLowerCase().includes(query) ||
+                (u.agent_code || '').toLowerCase().includes(query)
+            );
+            renderAgents(filtered);
+        };
+
+        document.getElementById('confirm-reassign-btn').onclick = async () => {
+            const newAgentId = select.value;
+            const { error: upError } = await supabase.from('client').update({ user_id: newAgentId }).eq('id', clientId);
+            if (!upError) {
+                alert("Client transferred successfully!");
+                modal.classList.add('hidden');
+                document.getElementById('client-detail-modal').classList.add('hidden');
+                loadUsers();
+            }
+        };
+    } catch(err) {
+        console.error(err);
+    }
 };
