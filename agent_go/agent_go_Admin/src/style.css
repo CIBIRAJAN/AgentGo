@@ -19,6 +19,8 @@
   --table-header-bg: #F8FAFC;
   --table-hover-bg: #F1F5F9;
   --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --warning: #F59E0B;
+  --warning-hover: #D97706;
 }
 
 .dark-mode {
@@ -189,6 +191,22 @@ body {
 
 .primary-btn:active {
   transform: translateY(0);
+}
+
+.warning-btn {
+  background: var(--warning);
+  color: #000;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+  border: none;
+}
+
+.warning-btn:hover {
+  background: var(--warning-hover);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+}
+
+.dark-mode .warning-btn {
+  color: #ffffff;
 }
 
 .secondary-btn {

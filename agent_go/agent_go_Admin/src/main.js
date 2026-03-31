@@ -1014,7 +1014,7 @@ async function showAgentClients(agentId, agentName) {
   const actionsBar = document.getElementById('actions-bar');
   actionsBar.innerHTML = `
     <div style="display: flex; gap: 12px; width: 100%; justify-content: flex-end;">
-      <button onclick="window.openTransferAll('${agentId}', '${agentName}')" class="primary-btn" style="background: var(--warning); color: #000; border: none; font-weight: 600;">
+      <button onclick="window.openTransferAll('${agentId}', '${agentName}')" class="primary-btn warning-btn">
         Transfer All Clients
       </button>
     </div>
