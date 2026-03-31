@@ -126,6 +126,7 @@ function render() {
             <table class="data-table">
               <thead>
                 <tr>
+                  <th>Info</th>
                   <th>Name</th>
                   <th>Agent Code</th>
                   <th>Email</th>
@@ -135,7 +136,7 @@ function render() {
                 </tr>
               </thead>
               <tbody id="users-table-body">
-                <tr><td colspan="6" class="loading">Loading agents...</td></tr>
+                <tr><td colspan="7" class="loading">Loading agents...</td></tr>
               </tbody>
             </table>
           </div>
@@ -373,6 +374,87 @@ function render() {
           </form>
         </div>
       </div>
+      <!-- Agent Detail Modal -->
+      <div id="agent-detail-modal" class="modal-overlay hidden">
+        <div class="modal large">
+          <div class="modal-header">
+            <h3>Agent Profile</h3>
+            <button onclick="document.getElementById('agent-detail-modal').classList.add('hidden')" class="icon-btn">&times;</button>
+          </div>
+          <div class="modal-tabs">
+            <button class="tab-btn active" data-modaltab="info">General Info</button>
+            <button class="tab-btn" data-modaltab="stats">Platform Stats</button>
+            <button class="tab-btn" data-modaltab="billing">Billing History</button>
+          </div>
+          <div id="agent-modal-content">
+             <div id="agent-tab-info">
+                <div class="detail-grid">
+                   <div class="detail-item"><span class="detail-label">Name</span><span class="detail-value" id="ad-name"></span></div>
+                   <div class="detail-item"><span class="detail-label">Email</span><span class="detail-value" id="ad-email"></span></div>
+                   <div class="detail-item"><span class="detail-label">Agent Code</span><span class="detail-value" id="ad-code"></span></div>
+                   <div class="detail-item"><span class="detail-label">Phone</span><span class="detail-value" id="ad-phone"></span></div>
+                   <div class="detail-item"><span class="detail-label">Joined On</span><span class="detail-value" id="ad-joined"></span></div>
+                   <div class="detail-item"><span class="detail-label">Plan Tier</span><span class="detail-value" id="ad-tier"></span></div>
+                </div>
+             </div>
+             <div id="agent-tab-stats" class="hidden">
+                 <div class="stats-mini-grid">
+                    <div class="stat-mini-card"><span class="val" id="ad-calls">0</span><span class="lab">Auto Calls</span></div>
+                    <div class="stat-mini-card"><span class="val" id="ad-balance">0</span><span class="lab">Call Balance</span></div>
+                    <div class="stat-mini-card"><span class="val" id="ad-purchases">0</span><span class="lab">Purchases</span></div>
+                 </div>
+             </div>
+             <div id="agent-tab-billing" class="hidden">
+                 <div id="ad-billing-list" style="margin-top:20px;"></div>
+             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Client Detail Modal -->
+      <div id="client-detail-modal" class="modal-overlay hidden">
+        <div class="modal">
+          <div class="modal-header">
+            <h3>Client Information</h3>
+            <button onclick="document.getElementById('client-detail-modal').classList.add('hidden')" class="icon-btn">&times;</button>
+          </div>
+          <div class="detail-grid" style="grid-template-columns: 1fr 1fr;">
+              <div class="detail-item"><span class="detail-label">Name</span><span class="detail-value" id="cd-name"></span></div>
+              <div class="detail-item"><span class="detail-label">Policy</span><span class="detail-value" id="cd-policy"></span></div>
+              <div class="detail-item"><span class="detail-label">Sum Assured</span><span class="detail-value" id="cd-sum"></span></div>
+              <div class="detail-item"><span class="detail-label">Mode</span><span class="detail-value" id="cd-mode"></span></div>
+              <div class="detail-item"><span class="detail-label">Premium</span><span class="detail-value" id="cd-premium"></span></div>
+              <div class="detail-item"><span class="detail-label">Term</span><span class="detail-value" id="cd-term"></span></div>
+              <div class="detail-item"><span class="detail-label">Mobile</span><span class="detail-value" id="cd-mobile"></span></div>
+              <div class="detail-item"><span class="detail-label">Assigned To</span><span class="detail-value" id="cd-agent"></span></div>
+          </div>
+          <div style="margin-top: 30px;">
+              <button class="primary-btn" id="show-reassign-btn">Transfer Client to Agent</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transfer Client Modal -->
+      <div id="reassign-modal" class="modal-overlay hidden" style="z-index: 110;">
+        <div class="modal">
+          <div class="modal-header">
+            <h3>Transfer Client</h3>
+            <button onclick="document.getElementById('reassign-modal').classList.add('hidden')" class="icon-btn">&times;</button>
+          </div>
+          <div class="info-banner">
+             <p>Reassigning <strong><span id="reassign-client-name"></span></strong></p>
+          </div>
+          <div class="input-group">
+              <label>Select New Agent</label>
+              <select id="new-agent-select" style="width:100%; padding:12px; border-radius:10px; background:var(--input-bg); border:1px solid var(--border-color); color:var(--text-main); font-family:inherit;">
+              </select>
+          </div>
+          <div class="form-actions">
+              <button class="secondary-btn" onclick="document.getElementById('reassign-modal').classList.add('hidden')">Cancel</button>
+              <button class="primary-btn" id="confirm-reassign-btn">Confirm Transfer</button>
+          </div>
+        </div>
+      </div>
     `;
 
     document.getElementById('logout-btn').addEventListener('click', async () => {
@@ -606,6 +688,24 @@ function render() {
       }
     });
 
+    // Agent Detail Modal Tab Switching
+    document.querySelectorAll('.tab-btn[data-modaltab]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const modal = btn.closest('.modal');
+        const target = btn.dataset.modaltab;
+        
+        modal.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        const tabs = ['info', 'stats', 'billing'];
+        tabs.forEach(t => {
+          const content = document.getElementById(`agent-tab-${t}`);
+          if (content) content.classList.toggle('hidden', t !== target);
+        });
+      });
+    });
+
     // Tab logic
     const tabs = document.querySelectorAll('.tab-link');
     const agentsView = document.getElementById('agents-view');
@@ -651,6 +751,115 @@ function render() {
   }
 }
 
+// New Admin Features Logic
+window.openAgentDetail = async function(id) {
+    const modal = document.getElementById('agent-detail-modal');
+    modal.classList.remove('hidden');
+    
+    // Reset tabs
+    modal.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    modal.querySelector('[data-modaltab="info"]').classList.add('active');
+    ['info', 'stats', 'billing'].forEach(c => {
+        const el = document.getElementById(`agent-tab-${c}`);
+        if(el) el.classList.toggle('hidden', c !== 'info');
+    });
+
+    try {
+        const { data: user, error: userError } = await supabase.from('user').select('*').eq('id', id).single();
+        if (userError) throw userError;
+
+        document.getElementById('ad-name').innerText = user.name || 'N/A';
+        document.getElementById('ad-email').innerText = user.email || 'N/A';
+        document.getElementById('ad-code').innerText = user.agent_code || 'N/A';
+        document.getElementById('ad-phone').innerText = user.phone_number || 'N/A';
+        document.getElementById('ad-joined').innerText = new Date(user.created_at).toLocaleDateString();
+        document.getElementById('ad-tier').innerText = (user.plan_tier || 'base').toUpperCase();
+
+        const { count: callCount } = await supabase.from('call_logs').select('*', { count: 'exact', head: true }).eq('user_id', id);
+        document.getElementById('ad-calls').innerText = callCount || 0;
+        document.getElementById('ad-balance').innerText = user.call_points_balance || 0;
+
+        const { data: payments } = await supabase.from('payments').select('*').eq('user_id', id).order('created_at', { ascending: false });
+        document.getElementById('ad-purchases').innerText = payments?.length || 0;
+
+        const billingList = document.getElementById('ad-billing-list');
+        if (!payments || payments.length === 0) {
+            billingList.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">No purchase history available.</p>';
+        } else {
+            billingList.innerHTML = `
+                <table class="data-table" style="font-size: 13px;">
+                    <thead><tr><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+                    <tbody>
+                        ${payments.map(p => `
+                            <tr>
+                                <td>${new Date(p.created_at).toLocaleDateString()}</td>
+                                <td>₹${p.amount}</td>
+                                <td><span class="badge" style="background:rgba(16,185,129,0.1); border:none;">${p.status.toUpperCase()}</span></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+    } catch(err) {
+        console.error(err);
+    }
+};
+
+window.openClientDetail = async function(id) {
+    const modal = document.getElementById('client-detail-modal');
+    modal.classList.remove('hidden');
+
+    try {
+        const { data: client, error } = await supabase.from('client').select('*, user(name)').eq('id', id).single();
+        if (error) throw error;
+
+        document.getElementById('cd-name').innerText = client.full_name || 'N/A';
+        document.getElementById('cd-policy').innerText = client.Policy_Number || 'N/A';
+        document.getElementById('cd-sum').innerText = `₹${client.Sum || '0'}`;
+        document.getElementById('cd-mode').innerText = client.Mode || 'N/A';
+        document.getElementById('cd-premium').innerText = `₹${client.Premium || '0'}`;
+        document.getElementById('cd-term').innerText = client.Term || 'N/A';
+        document.getElementById('cd-mobile').innerText = `${client.mobile_number_cc || '+91'}${client.mobile_number || ''}`;
+        document.getElementById('cd-agent').innerText = client.user?.name || 'N/A';
+
+        document.getElementById('show-reassign-btn').onclick = () => window.openReassign(client.id, client.full_name);
+    } catch(err) {
+        console.error(err);
+    }
+};
+
+window.openReassign = async function(clientId, clientName) {
+    const modal = document.getElementById('reassign-modal');
+    document.getElementById('reassign-client-name').innerText = clientName;
+    modal.classList.remove('hidden');
+
+    try {
+        const { data } = await supabase.functions.invoke('get_agents');
+        const agents = data.users;
+        const select = document.getElementById('new-agent-select');
+        select.innerHTML = agents.map(u => `
+            <option value="${u.id}">${u.user_metadata?.full_name || u.email} (${u.agent_code || 'No Code'})</option>
+        `).join('');
+
+        document.getElementById('confirm-reassign-btn').onclick = async () => {
+            const newAgentId = select.value;
+            const { error: upError } = await supabase.from('client').update({ user_id: newAgentId }).eq('id', clientId);
+            if (!upError) {
+                alert("Client transferred successfully!");
+                modal.classList.add('hidden');
+                document.getElementById('client-detail-modal').classList.add('hidden');
+                loadUsers();
+            }
+        };
+    } catch(err) {
+        console.error(err);
+    }
+};
+
+// Original Tab Logic continuation below...
+
+
 window.agentMap = {};
 
 async function loadUsers() {
@@ -685,6 +894,11 @@ async function loadUsers() {
 
       return `
         <tr class="agent-row" data-agent-id="${u.id}" data-agent-name="${u.user_metadata?.full_name || 'N/A'}" style="cursor: pointer;">
+          <td>
+            <button class="eye-btn" onclick="event.stopPropagation(); window.openAgentDetail('${u.id}')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+            </button>
+          </td>
           <td>
             <strong>${u.user_metadata?.full_name || 'N/A'}</strong>
             ${isCurrentAdmin ? '<span style="font-size: 10px; background: var(--primary); color: white; padding: 2px 6px; border-radius: 4px; margin-left: 8px;">YOU</span>' : ''}
@@ -763,7 +977,7 @@ async function loadClients(agentId = null) {
     }
 
     tbody.innerHTML = clients.map(c => `
-      <tr>
+      <tr onclick="window.openClientDetail('${c.id}')" style="cursor: pointer;">
         <td><strong>${c.full_name || 'N/A'}</strong></td>
         <td><span style="font-size:14px; color:var(--text-main); font-weight:500;">${window.agentMap[c.user_id] || c.user_id || 'N/A'}</span></td>
         <td>${c.Policy_Number || 'N/A'}</td>
@@ -804,7 +1018,7 @@ async function showAgentClients(agentId, agentName) {
     }
 
     tbody.innerHTML = clients.map(c => `
-      <tr>
+      <tr onclick="window.openClientDetail('${c.id}')" style="cursor: pointer;">
         <td><strong>${c.full_name || 'N/A'}</strong></td>
         <td>${agentName}</td>
         <td>${c.Policy_Number || 'N/A'}</td>
@@ -875,7 +1089,7 @@ async function loadRevenue() {
         <td style="font-family: monospace; font-size: 11px;">${s.user?.stripe_customer_id || 'Not Linked'}</td>
         <td>${s.current_period_end ? new Date(s.current_period_end).toLocaleDateString() : 'N/A'}</td>
         <td>${s.cancel_at_period_end ? 'No' : 'Yes'}</td>
-        <td><button class="secondary-btn" style="padding: 4px 8px; font-size: 11px;">View Ledger</button></td>
+        <td><button class="secondary-btn" style="padding: 4px 8px; font-size: 11px;" onclick="window.openAgentDetail('${s.user_id}')">View Profile</button></td>
       </tr>
     `).join('');
 
