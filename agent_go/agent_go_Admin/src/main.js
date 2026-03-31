@@ -999,8 +999,16 @@ async function showAgentClients(agentId, agentName) {
   document.getElementById('agents-view').classList.add('hidden');
   document.getElementById('clients-view').classList.remove('hidden');
   document.getElementById('revenue-view').classList.add('hidden');
+  document.getElementById('plans-view').classList.add('hidden');
+  document.getElementById('celebrations-view').classList.add('hidden');
   document.getElementById('actions-bar').classList.add('hidden');
-  pageTitle.innerText = `Clients of ${agentName}`;
+
+  const backBtn = `
+    <button onclick="window.goBackToAgents()" class="icon-btn" style="margin-right: 15px; background: var(--input-bg); border: 1px solid var(--border-color); width: 36px; height: 36px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; cursor: pointer; color: var(--text-main);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+  `;
+  pageTitle.innerHTML = `${backBtn} Clients of ${agentName}`;
 
   try {
     const { data: clients, error, count } = await supabase
@@ -1010,7 +1018,7 @@ async function showAgentClients(agentId, agentName) {
 
     if (error) throw error;
 
-    pageTitle.innerHTML = `Clients of ${agentName} <span style="font-size: 16px; opacity: 0.7; font-weight: 400; margin-left: 10px;">(${count || 0} Clients)</span>`;
+    pageTitle.innerHTML = `${backBtn} Clients of ${agentName} <span style="font-size: 16px; opacity: 0.7; font-weight: 400; margin-left: 10px;">(${count || 0} Clients)</span>`;
 
     if (clients.length === 0) {
       tbody.innerHTML = '<tr><td colspan="5" class="loading">No clients found for this agent</td></tr>';
@@ -1288,3 +1296,20 @@ async function loadPlans() {
   }
 }
 
+
+window.goBackToAgents = function() {
+  const agentsView = document.getElementById('agents-view');
+  const clientsView = document.getElementById('clients-view');
+  const actionsBar = document.getElementById('actions-bar');
+  const pageTitle = document.getElementById('page-title');
+
+  agentsView.classList.remove('hidden');
+  clientsView.classList.add('hidden');
+  actionsBar.classList.remove('hidden');
+  pageTitle.innerText = 'Manage Active Agents';
+  
+  // Ensure the "Agents" tab is active in the sidebar
+  document.querySelectorAll('.tab-link').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === 'agents');
+  });
+};
